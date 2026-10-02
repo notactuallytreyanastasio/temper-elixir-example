@@ -3,7 +3,7 @@
 
 ARG TEMPER_REPO=https://github.com/notactuallytreyanastasio/temper.git
 # the fork's main: be-elixir, typespecs checked by Dialyzer, the review's fixes
-ARG TEMPER_REF=94efe3e041321a6858bc33d51367de8fa2fd99c4
+ARG TEMPER_REF=b77cfcdf06715984a4584e521710260deb9e13a7
 
 FROM eclipse-temurin:21-jdk AS temper
 ARG TEMPER_REPO

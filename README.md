@@ -78,13 +78,20 @@ temper/out/temper-core/   be-elixir's runtime
 app/                      Phoenix: DraftWeb.DraftLive calls Temper.Textkit
 ```
 
-The generated code is an ordinary Elixir library, with typespecs:
+The generated code is an ordinary Elixir library, with typespecs, docs from
+Temper's doc comments, and `defp` for whatever Temper does not export:
 
 ```elixir
 @type t() :: %Temper.Textkit.Piece{kind: String.t(), text: String.t()}
 
+@doc """
+What changed between `before` and `after`, as pieces that rebuild either text.
+"""
 @spec diff(String.t(), String.t()) :: TemperCore.Vec.t(Temper.Textkit.Piece.t())
 def diff(before, after_) do
+
+@spec isSpace(integer()) :: boolean()
+defp isSpace(c) do
 ```
 
 The app calls it like any other library:
