@@ -1,0 +1,7 @@
+# generated from temper/ by bin/temper-gen
+/temper/out/
+/temper/out.new/
+temper.out/
+temper.keep/
+/scratch/temper.out/
+/scratch/temper.keep/

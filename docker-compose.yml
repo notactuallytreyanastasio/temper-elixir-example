@@ -1,0 +1,36 @@
+# Two services share one toolchain image (docker/Dockerfile): Elixir on
+# Erlang/OTP 28, and a Temper CLI built from source.
+#
+#   temper  rebuilds temper/out from temper/ whenever a Temper source changes
+#   web     the Phoenix app in app/, which uses the generated temper/out/textkit
+#
+# `make up` starts both; open http://localhost:4000.
+services:
+  temper:
+    build:
+      context: docker
+    image: temper-elixir-toolchain
+    volumes:
+      - .:/work
+    working_dir: /work
+    command: bin/temper-watch
+
+  web:
+    image: temper-elixir-toolchain
+    depends_on:
+      - temper
+    volumes:
+      - .:/work
+      # the app's dependencies and build stay in the container, not on the host
+      - deps:/work/app/deps
+      - build:/work/app/_build
+    working_dir: /work/app
+    ports:
+      - "4000:4000"
+    command: >
+      sh -c "until [ -d ../temper/out/textkit ]; do echo 'web: waiting for temper/out'; sleep 2; done;
+             mix deps.get && mix phx.server"
+
+volumes:
+  deps:
+  build:

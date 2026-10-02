@@ -1,0 +1,17 @@
+#!/bin/sh
+# Rebuilds temper/out (bin/temper-gen) whenever a Temper source changes.
+#
+# It polls once a second. File events from a macOS host do not reliably
+# reach a container, and a Temper build takes longer than the wait anyway.
+cd "$(dirname "$0")/.."
+last=""
+while true; do
+  now=$(find temper -path temper/out -prune -o -path temper/out.new -prune -o -type f \
+    \( -name '*.temper.md' -o -name '*.temper' -o -name '_connected.ex' \) -print \
+    -exec stat -c '%Y %s' {} \; 2>/dev/null | md5sum)
+  if [ "$now" != "$last" ]; then
+    last="$now"
+    bin/temper-gen || true
+  fi
+  sleep 1
+done

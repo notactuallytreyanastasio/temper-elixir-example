@@ -1,0 +1,26 @@
+#!/bin/sh
+# Builds the Temper libraries in temper/ into Elixir, in temper/out.
+#
+# It builds in a scratch copy, and replaces temper/out only when the build
+# is clean, so a Temper edit with an error leaves the app running on the
+# last good build while the error is printed here.
+set -eu
+cd "$(dirname "$0")/.."
+work=$(mktemp -d)
+trap 'rm -rf "$work"' EXIT
+for lib in temper/*/; do
+  [ -f "$lib/config.temper.md" ] && cp -R "$lib" "$work/$(basename "$lib")"
+done
+# a Temper diagnostic reads "[file:line+col]@X: message"
+if ! (cd "$work" && temper build -b elixir -w . > build.log 2>&1) || grep -q ']@[A-Z]:' "$work/build.log"; then
+  grep -v '^[[:space:]]*at ' "$work/build.log" | grep -v '^##' >&2
+  echo "temper-gen: the build failed; temper/out keeps the last good build" >&2
+  exit 1
+fi
+rm -rf temper/out.new
+mkdir -p temper/out.new
+cp -R "$work/temper.out/elixir/." temper/out.new/
+find temper/out.new -name '*.map' -delete
+rm -rf temper/out
+mv temper/out.new temper/out
+echo "temper-gen: temper/out rebuilt"
