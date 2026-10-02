@@ -17,7 +17,8 @@ run:           ## run scratch/src/main.temper.md (BACKEND=elixir by default)
 
 test:          ## textkit's Temper tests on the BEAM, then the app's tests
 	$(COMPOSE) run --rm --no-deps temper sh -c 'cd temper && temper test -b elixir -w .'
-	$(COMPOSE) run --rm web sh -c 'mix deps.get >/dev/null && mix test'
+	$(COMPOSE) run --rm --no-deps temper bin/temper-gen
+	$(COMPOSE) run --rm --no-deps web sh -c 'mix deps.get >/dev/null && mix test'
 
 gen:           ## regenerate temper/out once
 	$(COMPOSE) run --rm --no-deps temper bin/temper-gen

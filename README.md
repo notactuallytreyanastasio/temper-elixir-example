@@ -111,6 +111,8 @@ docker-compose build --build-arg TEMPER_REF=<commit> temper
 ```
 
 Temper's Gradle build needs about 4 GB of heap, so give Docker 6–8 GB.
+On Colima, which by default shares only your home directory with its VM,
+clone this repository somewhere under `~`.
 The watcher polls rather than relying on file events, because those don't
 reliably reach a container from a macOS host.
 
