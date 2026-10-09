@@ -27,7 +27,6 @@ if config_env() == :dev do
   config :draft, DraftWeb.Endpoint,
     live_reload: [
       web_console_logger: true,
-      dirs: ["", "../temper/out"],
       patterns: [
         # the generated Temper library
         ~r"temper/out/textkit/lib/.*\.ex$",

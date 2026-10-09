@@ -67,5 +67,11 @@ config :phoenix_live_view,
   enable_expensive_runtime_checks: true
 
 # File events from a macOS host do not reliably reach the container, so live
-# reload polls.
-config :phoenix_live_reload, backend: :fs_poll, backend_opts: [interval: 500]
+# reload polls. The watcher reads its dirs from here, not from the endpoint's
+# live_reload. Left to default it walks all of app/, _build included, and
+# stops on the dangling node_modules link Phoenix leaves in
+# _build/dev/phoenix-colocated, which takes the app down on its next boot.
+config :phoenix_live_reload,
+  backend: :fs_poll,
+  backend_opts: [interval: 500],
+  dirs: ["lib", "priv/static", "../temper/out/textkit"]
